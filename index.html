@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#05060a">
+    <meta name="description" content="Projeto Athena — Escape Room sobre Mulheres na Ciência. Recupere os arquivos apagados pela IA ERIS.">
+    <meta name="color-scheme" content="dark">
+
+    <title>Projeto Athena — Escape Room | Mulheres na Ciência</title>
+
+    <!-- ===== FONTES ===== -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;500;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- ============================================================
+         FUNDO ANIMADO (decorativo — invisível para leitores de tela)
+         ============================================================ -->
+    <div class="bg-grid"  aria-hidden="true"></div>
+    <div class="bg-glow"  aria-hidden="true"></div>
+    <div class="bg-scan"  aria-hidden="true"></div>
+    <div class="bg-vinheta" aria-hidden="true"></div>
+    <canvas id="particles" aria-hidden="true"></canvas>
+
+    <!-- ============================================================
+         TELA INICIAL
+         ============================================================ -->
+    <main id="tela-inicial" class="tela ativa">
+
+        <!-- Status do sistema (topo) -->
+        <div class="hud-topo" aria-hidden="true">
+            <span class="hud-item"><i class="led led-ok"></i> CONEXÃO SEGURA</span>
+            <span class="hud-item"><i class="led led-alerta"></i> ERIS: ATIVA</span>
+        </div>
+
+        <!-- Logo -->
+        <header class="logo-container">
+            <p class="pre-titulo">ARQUIVO CLASSIFICADO — NÍVEL 09</p>
+
+            <h1 class="logo" data-texto="PROJETO ATHENA">
+                PROJETO <span>ATHENA</span>
+            </h1>
+
+            <!-- aria-live para narrar o texto digitado -->
+            <p class="subtitulo" id="typing" aria-live="polite"></p>
+        </header>
+
+        <!-- Menu principal -->
+        <nav class="menu glass" aria-label="Menu principal">
+            <button class="btn-neon" id="btn-iniciar" type="button">
+                <span class="btn-txt">Iniciar Missão</span>
+            </button>
+
+            <!-- Só aparece se houver progresso salvo (controlado via JS) -->
+            <button class="btn-neon btn-continuar" id="btn-continuar" type="button" hidden>
+                <span class="btn-txt">Continuar</span>
+            </button>
+
+            <button class="btn-neon" id="btn-como-jogar" type="button"
+                    aria-haspopup="dialog" aria-controls="modal-como-jogar">
+                <span class="btn-txt">Como Jogar</span>
+            </button>
+
+            <button class="btn-neon" id="btn-creditos" type="button"
+                    aria-haspopup="dialog" aria-controls="modal-creditos">
+                <span class="btn-txt">Créditos</span>
+            </button>
+        </nav>
+
+        <!-- Controles rápidos -->
+        <div class="controles-rapidos">
+            <button class="btn-icone" id="btn-som" type="button"
+                    aria-pressed="true" aria-label="Ligar ou desligar o som">
+                <span class="icone-som" aria-hidden="true"></span>
+            </button>
+
+            <button class="btn-icone" id="btn-tela-cheia" type="button"
+                    aria-label="Alternar tela cheia">
+                <span class="icone-expandir" aria-hidden="true"></span>
+            </button>
+        </div>
+
+        <footer class="rodape">
+            <span class="rodape-texto">ANO 2150 — SISTEMA ERIS ONLINE</span>
+        </footer>
+    </main>
+
+    <!-- ============================================================
+         MODAL: COMO JOGAR
+         ============================================================ -->
+    <div class="modal" id="modal-como-jogar" role="dialog" aria-modal="true"
+         aria-labelledby="titulo-como-jogar" hidden>
+        <div class="modal-conteudo glass">
+
+            <button class="modal-x fechar-modal" type="button" aria-label="Fechar">
+                <span aria-hidden="true">&#10005;</span>
+            </button>
+
+            <h2 id="titulo-como-jogar">Como Jogar</h2>
+
+            <p>No ano de 2150, a Inteligência Artificial <strong>ERIS</strong> apagou
+            todos os registros das descobertas feitas por mulheres cientistas.</p>
+
+            <p>Você faz parte do <strong>Projeto Athena</strong>. Sua missão é explorar
+            cada laboratório, investigar objetos, encontrar pistas escondidas e
+            resolver os enigmas para recuperar os arquivos históricos.</p>
+
+            <ul class="lista-instrucoes">
+                <li>Clique nos objetos do cenário para investigá-los.</li>
+                <li>Itens encontrados vão para o <strong>inventário lateral</strong>.</li>
+                <li>Use o <strong>computador</strong> e o <strong>terminal</strong> para descobrir códigos.</li>
+                <li>Insira o código correto no <strong>teclado da porta</strong> para avançar.</li>
+            </ul>
+
+            <p class="modal-dica">Dica: nada é decorativo por acaso. Datas, nomes e
+            números escondem respostas.</p>
+
+            <button class="btn-neon fechar-modal" type="button">
+                <span class="btn-txt">Entendi</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- ============================================================
+         MODAL: CRÉDITOS
+         ============================================================ -->
+    <div class="modal" id="modal-creditos" role="dialog" aria-modal="true"
+         aria-labelledby="titulo-creditos" hidden>
+        <div class="modal-conteudo glass">
+
+            <button class="modal-x fechar-modal" type="button" aria-label="Fechar">
+                <span aria-hidden="true">&#10005;</span>
+            </button>
+
+            <h2 id="titulo-creditos">Créditos</h2>
+
+            <p>Um jogo educativo sobre <strong>Mulheres na Ciência</strong>.</p>
+
+            <ul class="lista-cientistas">
+                <li><strong>Ada Lovelace</strong> — a primeira programadora</li>
+                <li><strong>Marie Curie</strong> — pioneira da radioatividade</li>
+                <li><strong>Katherine Johnson</strong> — cálculos que levaram o homem ao espaço</li>
+                <li><strong>Rosalind Franklin</strong> — a imagem que revelou o DNA</li>
+            </ul>
+
+            <p class="creditos-dev">Desenvolvido para a Feira de Ciências.</p>
+
+            <button class="btn-neon fechar-modal" type="button">
+                <span class="btn-txt">Voltar</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- ============================================================
+         TRANSIÇÃO CINEMATOGRÁFICA
+         ============================================================ -->
+    <div id="transicao" class="transicao" role="status" aria-live="assertive" hidden>
+        <div class="transicao-conteudo">
+
+            <div class="transicao-logs" id="transicao-logs" aria-hidden="true"></div>
+
+            <p id="transicao-texto" class="transicao-texto"></p>
+
+            <div class="barra-progresso"
+                 role="progressbar"
+                 aria-label="Carregando"
+                 aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"
+                 id="barra-wrapper">
+                <div class="barra-preenchimento" id="barra"></div>
+            </div>
+
+            <p class="transicao-porcentagem" id="transicao-porcentagem">0%</p>
+        </div>
+    </div>
+
+    <!-- ============================================================
+         ÁUDIO
+         ============================================================ -->
+    <audio id="musica-ambiente" loop preload="auto">
+        <source src="assets/sons/ambiente.mp3" type="audio/mpeg">
+    </audio>
+
+    <!-- ============================================================
+         SCRIPTS
+         ============================================================ -->
+    <script src="script.js" defer></script>
+</body>
+</html>

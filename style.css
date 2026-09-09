@@ -1,0 +1,964 @@
+/* ============================================================
+   PROJETO ATHENA — ESTILO GLOBAL DA TELA INICIAL
+   Paleta: neon ciano/magenta sobre fundo escuro futurista
+   ============================================================ */
+
+/* ============================================================
+   1. VARIÁVEIS GLOBAIS
+   ============================================================ */
+:root {
+    /* Cores base */
+    --preto:        #05060a;
+    --azul-escuro:  #0a0e1a;
+    --azul-medio:   #10182b;
+    --ciano:        #00f0ff;
+    --magenta:      #ff2bd6;
+    --roxo:         #7b2fff;
+    --verde:        #4dff88;
+    --branco:       #e8f7ff;
+
+    /* Versões RGB (para usar com opacidade variável) */
+    --ciano-rgb:    0, 240, 255;
+    --magenta-rgb:  255, 43, 214;
+    --roxo-rgb:     123, 47, 255;
+
+    /* Vidro */
+    --vidro:        rgba(255, 255, 255, 0.06);
+    --vidro-forte:  rgba(255, 255, 255, 0.10);
+    --vidro-borda:  rgba(255, 255, 255, 0.18);
+
+    /* Tipografia */
+    --fonte-titulo: 'Orbitron', sans-serif;
+    --fonte-texto:  'Rajdhani', sans-serif;
+    --fonte-mono:   'Share Tech Mono', monospace;
+
+    /* Curvas de animação */
+    --suave:        cubic-bezier(0.22, 1, 0.36, 1);
+    --elastico:     cubic-bezier(0.34, 1.56, 0.64, 1);
+
+    /* Camadas (z-index centralizado) */
+    --z-fundo:      0;
+    --z-particulas: 1;
+    --z-tela:       2;
+    --z-modal:      50;
+    --z-transicao:  100;
+}
+
+/* ============================================================
+   2. RESET
+   ============================================================ */
+*,
+*::before,
+*::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    /* Base para o clamp() e o rem */
+    font-size: 100%;
+    -webkit-text-size-adjust: 100%;
+}
+
+html,
+body {
+    width: 100%;
+    min-height: 100%;
+    overflow: hidden;
+    background: var(--preto);
+    font-family: var(--fonte-texto);
+    color: var(--branco);
+    cursor: default;
+    /* Evita seleção acidental de texto durante o jogo */
+    -webkit-user-select: none;
+    user-select: none;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+}
+
+/* Foco visível apenas para navegação por teclado (acessibilidade) */
+:focus-visible {
+    outline: 2px solid var(--ciano);
+    outline-offset: 3px;
+    border-radius: 6px;
+}
+:focus:not(:focus-visible) {
+    outline: none;
+}
+
+/* Respeita usuários que preferem menos animação */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* Esconde de verdade os elementos com [hidden] (o display:flex sobrescreveria) */
+[hidden] {
+    display: none !important;
+}
+
+/* ============================================================
+   3. FUNDO ANIMADO
+   ============================================================ */
+
+/* --- Grade futurista em perspectiva --- */
+.bg-grid {
+    position: fixed;
+    inset: 0;
+    background-image:
+        linear-gradient(rgba(var(--ciano-rgb), 0.08) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(var(--ciano-rgb), 0.08) 1px, transparent 1px);
+    background-size: 50px 50px;
+    transform: perspective(400px) rotateX(60deg) scale(2);
+    transform-origin: center bottom;
+    animation: mover-grade 20s linear infinite;
+    opacity: 0.4;
+    /* Suaviza a grade no horizonte */
+    mask-image: linear-gradient(to top, #000 0%, transparent 85%);
+    -webkit-mask-image: linear-gradient(to top, #000 0%, transparent 85%);
+    z-index: var(--z-fundo);
+    pointer-events: none;
+}
+
+@keyframes mover-grade {
+    from { background-position: 0 0; }
+    to   { background-position: 0 50px; }
+}
+
+/* --- Brilho radial pulsante --- */
+.bg-glow {
+    position: fixed;
+    inset: 0;
+    background:
+        radial-gradient(circle at 25% 25%, rgba(var(--roxo-rgb), 0.28), transparent 55%),
+        radial-gradient(circle at 75% 70%, rgba(var(--magenta-rgb), 0.20), transparent 55%),
+        radial-gradient(circle at 50% 50%, rgba(var(--ciano-rgb), 0.10), transparent 70%);
+    animation: pulsar-glow 8s ease-in-out infinite alternate;
+    z-index: var(--z-fundo);
+    pointer-events: none;
+}
+
+@keyframes pulsar-glow {
+    from { opacity: 0.5; transform: scale(1); }
+    to   { opacity: 1;   transform: scale(1.08); }
+}
+
+/* --- Scanlines de monitor CRT --- */
+.bg-scan {
+    position: fixed;
+    inset: 0;
+    background: repeating-linear-gradient(
+        180deg,
+        rgba(0, 0, 0, 0)    0px,
+        rgba(0, 0, 0, 0)    2px,
+        rgba(0, 0, 0, 0.22) 3px,
+        rgba(0, 0, 0, 0.22) 4px
+    );
+    opacity: 0.5;
+    z-index: 3;
+    pointer-events: none;
+    mix-blend-mode: multiply;
+}
+
+/* Linha de varredura que desce lentamente */
+.bg-scan::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    width: 100%;
+    height: 140px;
+    background: linear-gradient(
+        180deg,
+        transparent,
+        rgba(var(--ciano-rgb), 0.05),
+        transparent
+    );
+    animation: varredura 7s linear infinite;
+}
+
+@keyframes varredura {
+    from { top: -140px; }
+    to   { top: 100%; }
+}
+
+/* --- Vinheta escura nas bordas --- */
+.bg-vinheta {
+    position: fixed;
+    inset: 0;
+    background: radial-gradient(
+        ellipse at center,
+        transparent 45%,
+        rgba(0, 0, 0, 0.55) 100%
+    );
+    z-index: 3;
+    pointer-events: none;
+}
+
+/* --- Canvas de partículas --- */
+#particles {
+    position: fixed;
+    inset: 0;
+    z-index: var(--z-particulas);
+    pointer-events: none;
+}
+
+/* ============================================================
+   4. ESTRUTURA DAS TELAS
+   ============================================================ */
+.tela {
+    position: relative;
+    z-index: var(--z-tela);
+    width: 100%;
+    /* dvh evita o corte causado pela barra de endereço no mobile */
+    min-height: 100vh;
+    min-height: 100dvh;
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: clamp(24px, 4vh, 44px);
+    padding: 70px 20px 60px;
+}
+
+.tela.ativa {
+    display: flex;
+    animation: entrada-tela 1.5s var(--suave) forwards;
+}
+
+@keyframes entrada-tela {
+    from { opacity: 0; filter: blur(8px); transform: scale(1.04); }
+    to   { opacity: 1; filter: blur(0);   transform: scale(1); }
+}
+
+/* ============================================================
+   5. HUD SUPERIOR (status do sistema)
+   ============================================================ */
+.hud-topo {
+    position: absolute;
+    top: 18px;
+    left: 0;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    gap: clamp(16px, 4vw, 48px);
+    font-family: var(--fonte-mono);
+    font-size: 0.7rem;
+    letter-spacing: 2px;
+    color: rgba(232, 247, 255, 0.55);
+    animation: descer 1.6s var(--suave);
+    pointer-events: none;
+}
+
+.hud-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    white-space: nowrap;
+}
+
+/* LED indicador */
+.led {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    display: inline-block;
+    flex-shrink: 0;
+}
+
+.led-ok {
+    background: var(--verde);
+    box-shadow: 0 0 8px var(--verde);
+    animation: led-pulsar 2.4s ease-in-out infinite;
+}
+
+.led-alerta {
+    background: var(--magenta);
+    box-shadow: 0 0 8px var(--magenta);
+    animation: led-pulsar 1s ease-in-out infinite;
+}
+
+@keyframes led-pulsar {
+    0%, 100% { opacity: 1;   transform: scale(1); }
+    50%      { opacity: 0.35; transform: scale(0.8); }
+}
+
+/* ============================================================
+   6. LOGO
+   ============================================================ */
+.logo-container {
+    text-align: center;
+    animation: descer 1.2s var(--suave);
+}
+
+@keyframes descer {
+    from { opacity: 0; transform: translateY(-40px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+.pre-titulo {
+    font-family: var(--fonte-mono);
+    font-size: clamp(0.6rem, 1.4vw, 0.78rem);
+    letter-spacing: clamp(3px, 1vw, 7px);
+    color: rgba(var(--magenta-rgb), 0.8);
+    margin-bottom: 14px;
+    text-shadow: 0 0 10px rgba(var(--magenta-rgb), 0.6);
+}
+
+.logo {
+    position: relative;
+    font-family: var(--fonte-titulo);
+    font-size: clamp(2.2rem, 8vw, 6rem);
+    font-weight: 900;
+    letter-spacing: clamp(2px, 1.2vw, 8px);
+    line-height: 1.05;
+    color: var(--branco);
+    text-shadow:
+        0 0 10px var(--ciano),
+        0 0 30px var(--ciano),
+        0 0 60px var(--roxo);
+    animation: brilho-titulo 3s ease-in-out infinite alternate;
+}
+
+.logo span {
+    color: var(--magenta);
+    text-shadow:
+        0 0 10px var(--magenta),
+        0 0 30px var(--magenta),
+        0 0 60px var(--magenta);
+}
+
+@keyframes brilho-titulo {
+    from { filter: brightness(1); }
+    to   { filter: brightness(1.3); }
+}
+
+/* Efeito glitch usando o atributo data-texto do HTML */
+.logo::before,
+.logo::after {
+    content: attr(data-texto);
+    position: absolute;
+    inset: 0;
+    color: var(--branco);
+    background: var(--preto);
+    overflow: hidden;
+    opacity: 0.8;
+    pointer-events: none;
+}
+
+.logo::before {
+    left: 2px;
+    text-shadow: -2px 0 var(--magenta);
+    clip-path: inset(0 0 55% 0);
+    animation: glitch-cima 4s steps(2, end) infinite;
+}
+
+.logo::after {
+    left: -2px;
+    text-shadow: 2px 0 var(--ciano);
+    clip-path: inset(55% 0 0 0);
+    animation: glitch-baixo 4s steps(2, end) infinite;
+}
+
+/* O glitch fica invisível quase todo o tempo — só "pisca" de vez em quando */
+@keyframes glitch-cima {
+    0%, 92%, 100% { opacity: 0; transform: translate(0); }
+    93%           { opacity: 0.9; transform: translate(-4px, -2px); }
+    95%           { opacity: 0.9; transform: translate(3px, 1px); }
+    97%           { opacity: 0; }
+}
+
+@keyframes glitch-baixo {
+    0%, 92%, 100% { opacity: 0; transform: translate(0); }
+    94%           { opacity: 0.9; transform: translate(4px, 2px); }
+    96%           { opacity: 0.9; transform: translate(-3px, -1px); }
+    98%           { opacity: 0; }
+}
+
+/* Subtítulo com efeito de digitação */
+.subtitulo {
+    margin-top: 18px;
+    font-family: var(--fonte-mono);
+    font-size: clamp(0.85rem, 2vw, 1.25rem);
+    letter-spacing: clamp(1px, 0.5vw, 3px);
+    color: var(--ciano);
+    min-height: 1.6em;
+    font-weight: 400;
+    text-shadow: 0 0 12px rgba(var(--ciano-rgb), 0.5);
+}
+
+/* Cursor piscante */
+.subtitulo::after {
+    content: '▋';
+    margin-left: 2px;
+    animation: piscar-cursor 0.8s step-end infinite;
+}
+
+@keyframes piscar-cursor {
+    50% { opacity: 0; }
+}
+
+/* ============================================================
+   7. GLASSMORPHISM
+   ============================================================ */
+.glass {
+    position: relative;
+    background: var(--vidro);
+    backdrop-filter: blur(14px) saturate(1.2);
+    -webkit-backdrop-filter: blur(14px) saturate(1.2);
+    border: 1px solid var(--vidro-borda);
+    border-radius: 20px;
+    box-shadow:
+        0 8px 32px rgba(0, 0, 0, 0.5),
+        inset 0 1px 1px rgba(255, 255, 255, 0.12);
+}
+
+/* Brilho sutil na borda superior do vidro */
+.glass::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 12%;
+    width: 76%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(var(--ciano-rgb), 0.7), transparent);
+    pointer-events: none;
+}
+
+/* Fallback: se o navegador não suportar backdrop-filter, escurece o painel */
+@supports not (backdrop-filter: blur(1px)) {
+    .glass {
+        background: rgba(10, 14, 26, 0.88);
+    }
+}
+
+/* ============================================================
+   8. MENU E BOTÕES NEON
+   ============================================================ */
+.menu {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: clamp(24px, 4vw, 40px) clamp(28px, 6vw, 60px);
+    animation: subir 1.4s var(--suave);
+}
+
+@keyframes subir {
+    from { opacity: 0; transform: translateY(40px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+.btn-neon {
+    position: relative;
+    isolation: isolate; /* cria contexto próprio para o ::before */
+    font-family: var(--fonte-titulo);
+    font-size: clamp(0.85rem, 1.6vw, 1.05rem);
+    font-weight: 700;
+    letter-spacing: 2px;
+    padding: 15px clamp(28px, 5vw, 50px);
+    min-width: 240px;
+    color: var(--ciano);
+    background: rgba(var(--ciano-rgb), 0.04);
+    border: 2px solid var(--ciano);
+    border-radius: 10px;
+    cursor: pointer;
+    overflow: hidden;
+    text-transform: uppercase;
+    transition:
+        color 0.35s ease,
+        box-shadow 0.35s ease,
+        transform 0.2s var(--elastico),
+        border-color 0.35s ease;
+}
+
+/* Preenchimento que desliza da esquerda */
+.btn-neon::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, var(--ciano), #6ff7ff);
+    transform: translateX(-101%);
+    transition: transform 0.45s var(--suave);
+    z-index: -1; /* funciona porque o botão tem isolation:isolate */
+}
+
+/* O texto vive acima do preenchimento — corrige o bug de legibilidade */
+.btn-txt {
+    position: relative;
+    z-index: 1;
+}
+
+.btn-neon:hover,
+.btn-neon:focus-visible {
+    color: var(--preto);
+    box-shadow:
+        0 0 15px rgba(var(--ciano-rgb), 0.8),
+        0 0 40px rgba(var(--ciano-rgb), 0.35);
+    transform: translateY(-3px);
+}
+
+.btn-neon:hover::before,
+.btn-neon:focus-visible::before {
+    transform: translateX(0);
+}
+
+.btn-neon:active {
+    transform: translateY(-1px) scale(0.97);
+}
+
+/* Variante do botão "Continuar" (magenta, para destacar) */
+.btn-continuar {
+    color: var(--magenta);
+    border-color: var(--magenta);
+    background: rgba(var(--magenta-rgb), 0.05);
+}
+
+.btn-continuar::before {
+    background: linear-gradient(90deg, var(--magenta), #ff7de6);
+}
+
+.btn-continuar:hover,
+.btn-continuar:focus-visible {
+    color: #fff;
+    box-shadow:
+        0 0 15px rgba(var(--magenta-rgb), 0.8),
+        0 0 40px rgba(var(--magenta-rgb), 0.35);
+}
+
+/* ============================================================
+   9. CONTROLES RÁPIDOS (som / tela cheia)
+   ============================================================ */
+.controles-rapidos {
+    position: absolute;
+    top: 16px;
+    right: 18px;
+    display: flex;
+    gap: 10px;
+    animation: aparecer 2s ease;
+}
+
+.btn-icone {
+    width: 40px;
+    height: 40px;
+    display: grid;
+    place-items: center;
+    background: rgba(10, 14, 26, 0.5);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(var(--ciano-rgb), 0.35);
+    border-radius: 10px;
+    cursor: pointer;
+    transition: 0.3s ease;
+}
+
+.btn-icone:hover {
+    border-color: var(--ciano);
+    box-shadow: 0 0 14px rgba(var(--ciano-rgb), 0.5);
+    transform: translateY(-2px);
+}
+
+/* --- Ícone de som (alto-falante desenhado em CSS) --- */
+.icone-som {
+    position: relative;
+    width: 8px;
+    height: 10px;
+    background: var(--ciano);
+    box-shadow: 0 0 6px var(--ciano);
+}
+
+/* Cone do alto-falante */
+.icone-som::before {
+    content: '';
+    position: absolute;
+    left: 6px;
+    top: 50%;
+    transform: translateY(-50%);
+    border-style: solid;
+    border-width: 9px 0 9px 9px;
+    border-color: transparent transparent transparent var(--ciano);
+    filter: drop-shadow(0 0 4px var(--ciano));
+}
+
+/* Ondas sonoras */
+.icone-som::after {
+    content: '';
+    position: absolute;
+    left: 17px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 6px;
+    height: 6px;
+    border: 2px solid var(--ciano);
+    border-left-color: transparent;
+    border-bottom-color: transparent;
+    border-radius: 0 50% 0 0;
+    transition: opacity 0.3s;
+}
+
+/* Estado "mudo": ondas desaparecem e o ícone fica magenta */
+.btn-icone[aria-pressed="false"] .icone-som,
+.btn-icone[aria-pressed="false"] .icone-som::before {
+    background: var(--magenta);
+    border-left-color: var(--magenta);
+    box-shadow: none;
+    filter: none;
+}
+
+.btn-icone[aria-pressed="false"] .icone-som::after {
+    opacity: 0;
+}
+
+.btn-icone[aria-pressed="false"] {
+    border-color: rgba(var(--magenta-rgb), 0.5);
+}
+
+/* --- Ícone de expandir (cantos) --- */
+.icone-expandir {
+    position: relative;
+    width: 18px;
+    height: 18px;
+}
+
+.icone-expandir::before,
+.icone-expandir::after {
+    content: '';
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    border: 2px solid var(--ciano);
+    filter: drop-shadow(0 0 4px var(--ciano));
+}
+
+.icone-expandir::before {
+    top: 0;
+    left: 0;
+    border-right: none;
+    border-bottom: none;
+}
+
+.icone-expandir::after {
+    bottom: 0;
+    right: 0;
+    border-left: none;
+    border-top: none;
+}
+
+/* ============================================================
+   10. RODAPÉ
+   ============================================================ */
+.rodape {
+    position: absolute;
+    bottom: 18px;
+    left: 0;
+    width: 100%;
+    text-align: center;
+    font-family: var(--fonte-mono);
+    font-size: clamp(0.65rem, 1.5vw, 0.82rem);
+    letter-spacing: clamp(2px, 1vw, 4px);
+    color: rgba(var(--magenta-rgb), 0.7);
+    pointer-events: none;
+}
+
+.rodape-texto {
+    animation: piscar-rodape 2.4s ease-in-out infinite;
+}
+
+@keyframes piscar-rodape {
+    50% { opacity: 0.3; }
+}
+
+/* ============================================================
+   11. MODAIS
+   ============================================================ */
+.modal {
+    position: fixed;
+    inset: 0;
+    z-index: var(--z-modal);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background: rgba(0, 0, 0, 0.72);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+}
+
+.modal.ativo {
+    display: flex;
+    animation: aparecer 0.4s ease;
+}
+
+@keyframes aparecer {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+.modal-conteudo {
+    position: relative;
+    max-width: 620px;
+    width: 100%;
+    max-height: 88vh;
+    overflow-y: auto;
+    padding: clamp(26px, 5vw, 42px);
+    text-align: left;
+    animation: zoom-in 0.45s var(--elastico);
+    /* Permite selecionar o texto informativo dos modais */
+    -webkit-user-select: text;
+    user-select: text;
+}
+
+@keyframes zoom-in {
+    from { transform: scale(0.85) translateY(20px); opacity: 0; }
+    to   { transform: scale(1) translateY(0);       opacity: 1; }
+}
+
+.modal-conteudo h2 {
+    font-family: var(--fonte-titulo);
+    font-size: clamp(1.3rem, 3.5vw, 1.8rem);
+    color: var(--magenta);
+    margin-bottom: 20px;
+    padding-right: 40px; /* espaço para o botão X */
+    text-shadow: 0 0 12px var(--magenta);
+    letter-spacing: 1px;
+}
+
+.modal-conteudo p,
+.modal-conteudo li {
+    font-size: clamp(0.95rem, 2vw, 1.08rem);
+    line-height: 1.65;
+    margin-bottom: 12px;
+}
+
+.modal-conteudo strong {
+    color: var(--ciano);
+}
+
+/* Listas com marcador neon customizado */
+.lista-instrucoes,
+.lista-cientistas {
+    list-style: none;
+    margin: 16px 0 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.lista-instrucoes li,
+.lista-cientistas li {
+    position: relative;
+    padding-left: 24px;
+}
+
+.lista-instrucoes li::before,
+.lista-cientistas li::before {
+    content: '';
+    position: absolute;
+    left: 4px;
+    top: 0.72em;
+    width: 7px;
+    height: 7px;
+    background: var(--ciano);
+    box-shadow: 0 0 8px var(--ciano);
+    transform: rotate(45deg);
+}
+
+.lista-cientistas li::before {
+    background: var(--magenta);
+    box-shadow: 0 0 8px var(--magenta);
+}
+
+/* Caixa de dica */
+.modal-dica {
+    margin-top: 18px;
+    padding: 14px 18px;
+    background: rgba(var(--ciano-rgb), 0.07);
+    border-left: 3px solid var(--ciano);
+    border-radius: 0 10px 10px 0;
+    font-size: 0.95rem !important;
+    font-style: italic;
+    opacity: 0.9;
+}
+
+.creditos-dev {
+    margin-top: 20px;
+    font-family: var(--fonte-mono);
+    font-size: 0.85rem !important;
+    letter-spacing: 2px;
+    opacity: 0.6;
+}
+
+/* Botão X de fechar */
+.modal-x {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    width: 34px;
+    height: 34px;
+    display: grid;
+    place-items: center;
+    background: transparent;
+    border: 1px solid rgba(var(--magenta-rgb), 0.5);
+    border-radius: 8px;
+    color: var(--magenta);
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: 0.3s ease;
+    z-index: 2;
+}
+
+.modal-x:hover {
+    background: var(--magenta);
+    color: #fff;
+    box-shadow: 0 0 14px var(--magenta);
+    transform: rotate(90deg);
+}
+
+/* Botão de texto para fechar o modal */
+.fechar-modal:not(.modal-x) {
+    margin-top: 22px;
+    width: 100%;
+    min-width: 0;
+}
+
+/* ============================================================
+   12. TRANSIÇÃO CINEMATOGRÁFICA
+   ============================================================ */
+.transicao {
+    position: fixed;
+    inset: 0;
+    z-index: var(--z-transicao);
+    background: var(--preto);
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.transicao.ativo {
+    display: flex;
+    animation: aparecer 0.5s ease;
+}
+
+.transicao-conteudo {
+    text-align: center;
+    width: 100%;
+    max-width: 540px;
+}
+
+/* Logs falsos de terminal */
+.transicao-logs {
+    font-family: var(--fonte-mono);
+    font-size: clamp(0.6rem, 1.5vw, 0.75rem);
+    line-height: 1.7;
+    color: rgba(var(--ciano-rgb), 0.45);
+    text-align: left;
+    height: 130px;
+    overflow: hidden;
+    margin-bottom: 26px;
+    /* Desvanece as linhas antigas no topo */
+    mask-image: linear-gradient(to bottom, transparent, #000 40%);
+    -webkit-mask-image: linear-gradient(to bottom, transparent, #000 40%);
+}
+
+.transicao-logs div {
+    animation: log-entra 0.3s ease;
+}
+
+@keyframes log-entra {
+    from { opacity: 0; transform: translateX(-10px); }
+    to   { opacity: 1; transform: translateX(0); }
+}
+
+.transicao-texto {
+    font-family: var(--fonte-titulo);
+    font-size: clamp(0.95rem, 2.5vw, 1.3rem);
+    color: var(--ciano);
+    letter-spacing: 2px;
+    margin-bottom: 24px;
+    min-height: 1.6em;
+    text-shadow: 0 0 14px var(--ciano);
+}
+
+.barra-progresso {
+    position: relative;
+    width: 100%;
+    height: 8px;
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid var(--vidro-borda);
+}
+
+.barra-preenchimento {
+    width: 0%;
+    height: 100%;
+    background: linear-gradient(90deg, var(--roxo), var(--ciano), var(--magenta));
+    background-size: 200% 100%;
+    box-shadow: 0 0 18px var(--ciano);
+    border-radius: 10px;
+    transition: width 0.3s ease;
+    animation: deslizar-gradiente 2s linear infinite;
+}
+
+@keyframes deslizar-gradiente {
+    from { background-position: 0% 0; }
+    to   { background-position: 200% 0; }
+}
+
+.transicao-porcentagem {
+    margin-top: 12px;
+    font-family: var(--fonte-mono);
+    font-size: 0.85rem;
+    letter-spacing: 3px;
+    color: rgba(232, 247, 255, 0.6);
+}
+
+/* ============================================================
+   13. RESPONSIVIDADE
+   ============================================================ */
+
+/* Telas médias / notebooks pequenos */
+@media (max-width: 900px) {
+    .hud-topo { font-size: 0.62rem; }
+}
+
+/* Tablets */
+@media (max-width: 768px) {
+    .tela { padding: 64px 16px 54px; gap: 26px; }
+    .menu { width: 100%; max-width: 340px; }
+    .btn-neon { width: 100%; min-width: 0; }
+    .modal-conteudo { padding: 24px; }
+    .transicao-logs { height: 100px; }
+}
+
+/* Celulares */
+@media (max-width: 480px) {
+    .hud-topo { gap: 14px; font-size: 0.55rem; letter-spacing: 1px; }
+    .pre-titulo { letter-spacing: 2px; }
+    .subtitulo { letter-spacing: 0.5px; }
+    .controles-rapidos { top: 12px; right: 12px; }
+    .btn-icone { width: 36px; height: 36px; }
+    .transicao-logs { height: 80px; }
+    /* A grade em perspectiva pesa em celular: reduz a intensidade */
+    .bg-grid { opacity: 0.25; }
+    .bg-scan { display: none; }
+}
+
+/* Telas muito baixas (ex.: notebook em modo apresentação) */
+@media (max-height: 620px) {
+    .tela { gap: 18px; padding-top: 52px; }
+    .logo { font-size: clamp(1.8rem, 6vw, 3rem); }
+    .subtitulo { margin-top: 10px; }
+    .menu { padding: 18px 30px; gap: 10px; }
+    .btn-neon { padding: 11px 30px; }
+    .hud-topo { top: 10px; }
+}
+
+/* Modo tela cheia: esconde o botão de expandir */
+:fullscreen .icone-expandir::before { border-right: 2px solid var(--ciano); border-bottom: 2px solid var(--ciano); }

@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ARQUIVO 02 — LABORATÓRIO CURIE</title>
+<link rel="stylesheet" href="sala2.css">
+</head>
+<body>
+
+<!-- ============ BOOT ============ -->
+<div class="boot" id="boot">
+  <pre id="bootTxt"></pre>
+</div>
+
+<!-- ============ HUD ============ -->
+<header class="hud">
+  <span class="hud-tit">ARQUIVO&nbsp;02 <em>· LAB. CURIE</em></span>
+
+  <div class="geiger" id="geiger">
+    <span class="geiger-led"></span>
+    <span class="geiger-txt">standby</span>
+    <span class="geiger-graf" id="geigerGraf"></span>
+  </div>
+
+  <span class="hud-sel" id="hudSel">amostra: —</span>
+
+  <div class="hud-acoes">
+    <button id="btnDica" class="hud-btn">DICA <em>+8%</em></button>
+    <button id="btnReset" class="hud-btn danger" title="Reiniciar a sala">↺ REINICIAR</button>
+  </div>
+
+  <div class="dose-wrap">
+    <span class="dose-rot">DOSE ACUMULADA</span>
+    <div class="dose-barra">
+      <div class="dose-fill" id="doseFill"></div>
+      <span class="dose-marca" style="left:45%"></span>
+      <span class="dose-marca" style="left:75%"></span>
+    </div>
+    <span class="dose-txt" id="doseTxt">0%</span>
+  </div>
+</header>
+
+<!-- ============ CENA ============ -->
+<main class="cena" id="cena">
+  <div class="cena-piso"></div>
+  <div class="cena-parede"></div>
+  <div class="poeira" id="poeira"></div>
+
+  <!-- BANCADA -->
+  <button class="hotspot" style="--x:20%;--y:64%" data-est="bancada">
+    <span class="obj obj-bancada">
+      <i class="frasco-mini f1"></i><i class="frasco-mini f2"></i><i class="frasco-mini f3"></i>
+      <span class="obj-tampo"></span>
+    </span>
+    <span class="hs-anel"></span>
+    <span class="hs-nome">BANCADA DE AMOSTRAS</span>
+  </button>
+
+  <!-- TERMINAL -->
+  <button class="hotspot" style="--x:62%;--y:47%" data-est="terminal">
+    <span class="obj obj-terminal">
+      <span class="obj-tela"><i></i><i></i><i></i></span>
+      <span class="obj-base"></span>
+    </span>
+    <span class="hs-anel"></span>
+    <span class="hs-nome">TERMINAL ERIS · GEIGER</span>
+  </button>
+
+  <!-- ARMÁRIO -->
+  <button class="hotspot bloqueado" style="--x:86%;--y:62%" data-est="armario" id="hsArmario">
+    <span class="obj obj-armario">
+      <span class="obj-gaveta"></span><span class="obj-gaveta"></span><span class="obj-gaveta"></span>
+      <span class="obj-trava" id="objTrava">🔒</span>
+    </span>
+    <span class="hs-anel"></span>
+    <span class="hs-nome" id="nomeArmario">ARMÁRIO DE BLINDAGEM</span>
+  </button>
+
+  <!-- MURAL -->
+  <button class="hotspot" style="--x:42%;--y:23%" data-est="mural">
+    <span class="obj obj-mural">
+      <span class="folha"></span><span class="folha"></span><span class="folha"></span><span class="folha"></span>
+    </span>
+    <span class="hs-anel"></span>
+    <span class="hs-nome">MURAL DE DADOS</span>
+  </button>
+
+  <!-- PORTA -->
+  <button class="hotspot" style="--x:8%;--y:33%" data-est="porta">
+    <span class="obj obj-porta">
+      <span class="obj-painel"><i></i><i></i><i></i><i></i></span>
+    </span>
+    <span class="hs-anel"></span>
+    <span class="hs-nome">PORTA BLINDADA</span>
+  </button>
+</main>
+
+<!-- ============ MÓDULO ============ -->
+<div class="overlay" id="overlay" hidden>
+  <section class="modulo">
+    <header>
+      <h2 id="modTitulo"></h2>
+      <button id="modFechar" aria-label="Fechar">✕ ESC</button>
+    </header>
+    <div id="modCorpo"></div>
+  </section>
+</div>
+
+<!-- ============ TELA DE FALHA ============ -->
+<div class="fim" id="fim" hidden>
+  <div class="fim-card" id="fimCard">
+    <h2 id="fimTit"></h2>
+    <p id="fimTxt"></p>
+    <div class="fim-stats" id="fimStats"></div>
+    <div class="fim-btns">
+      <button class="btn-pri" id="btnReiniciar">↺ REINICIAR A SALA</button>
+      <button class="btn-sec" id="btnContinuar">CONTINUAR DA DOSE ATUAL</button>
+    </div>
+  </div>
+</div>
+
+<!-- ================= TEMPLATES ================= -->
+
+<template id="tplBancada">
+  <p class="mod-texto">
+    Cinco amostras. Os rótulos A–E foram trocados; a gravação no vidro indica o elemento.<br>
+    A luminescência só é legível com fóton suficiente chegando ao olho — e toda leitura custa dose.
+  </p>
+
+  <div class="frascos" id="frascos"></div>
+
+  <div class="painel-ctrl">
+    <label class="ctrl">
+      <span>DISTÂNCIA DE MANIPULAÇÃO</span>
+      <b><output id="outD">40</output> cm</b>
+      <input type="range" id="dist" min="10" max="100" step="5" value="40">
+      <small>10 cm = risco máximo · 100 cm = leitura fraca</small>
+    </label>
+
+    <div class="previa">
+      <div><span>dose prevista</span><b id="prevDose">—</b></div>
+      <div><span>fluxo visível</span><b id="prevLuz">—</b></div>
+    </div>
+  </div>
+
+  <p class="mod-texto mod-texto--label">BLINDAGEM INTERPOSTA:</p>
+  <div class="blindagens" id="blindagens">
+    <button data-b="nenhuma" class="ativo">NENHUMA</button>
+    <button data-b="papel" disabled>PAPEL</button>
+    <button data-b="aluminio" disabled>ALUMÍNIO</button>
+    <button data-b="chumbo" disabled>CHUMBO</button>
+  </div>
+
+  <button id="btnLer" class="btn-pri">▸ LER AMOSTRA</button>
+  <p class="fb" id="fbLer"></p>
+</template>
+
+<template id="tplTerminal">
+  <p class="mod-texto">
+    Contador Geiger–Müller acoplado. Radiação de fundo desta sala:
+    <b class="destaque">18 ± 5 cpm</b>.<br>
+    Uma amostra só é ATIVA se exceder o fundo em 3σ (&gt; 33 cpm).
+    Contagem única é estatística: repita.
+  </p>
+
+  <div class="osciloscopio">
+    <div class="osc-grade"></div>
+    <div class="osc-limiar"><span>3σ = 33</span></div>
+    <div class="osc-barras" id="oscBarras"></div>
+    <div class="terminal-tela" id="cpmTela">—</div>
+  </div>
+
+  <button id="btnContar" class="btn-pri">▸ CONTAR 5 s <em>(+2% dose)</em></button>
+
+  <table class="tab-log">
+    <caption>LOG DE CONTAGENS</caption>
+    <thead><tr><th>Amostra</th><th>dist.</th><th>cpm</th><th>Veredito</th></tr></thead>
+    <tbody id="logCpm"><tr><td colspan="4" class="vazio">sem registros</td></tr></tbody>
+  </table>
+</template>
+
+<template id="tplArmario">
+  <p class="mod-texto">
+    Painel mecânico da gaveta. Dois algarismos.<br>
+    <i>"Quantos prótons tem o elemento que Marie batizou em homenagem à sua terra natal?"</i>
+  </p>
+
+  <div id="parcialCofre" class="parcial"></div>
+
+  <div class="teclado-wrap">
+    <input type="text" id="cofre" maxlength="2" inputmode="numeric" placeholder="00">
+    <button id="btnCofre" class="btn-pri">FORÇAR</button>
+  </div>
+
+  <div class="vidas" id="vidasCofre"></div>
+  <p class="fb" id="fbCofre"></p>
+</template>
+
+
+<template id="tplMural">
+  <table>
+    <caption>PODER DE PENETRAÇÃO DA RADIAÇÃO</caption>
+    <thead><tr><th>Emissão</th><th>Papel</th><th>Alumínio</th><th>Chumbo</th></tr></thead>
+    <tbody>
+      <tr><td>α (alfa)</td><td class="ok">BARRA</td><td class="ok">BARRA</td><td class="ok">BARRA</td></tr>
+      <tr><td>β (beta)</td><td class="erro">passa</td><td class="ok">BARRA</td><td class="ok">BARRA</td></tr>
+      <tr><td>γ (gama)</td><td class="erro">passa</td><td class="erro">passa</td><td class="ok">BARRA</td></tr>
+    </tbody>
+  </table>
+
+  <table>
+    <caption>NÚMERO ATÔMICO (Z)</caption>
+    <thead><tr><th>Símbolo</th><th>Elemento</th><th>Z</th></tr></thead>
+    <tbody>
+      <tr><td>Bi</td><td>Bismuto</td><td>83</td></tr>
+      <tr><td>Po</td><td>Polônio</td><td>84</td></tr>
+      <tr><td>At</td><td>Astato</td><td>85</td></tr>
+      <tr><td>Rn</td><td>Radônio</td><td>86</td></tr>
+      <tr><td>Ra</td><td>Rádio</td><td>88</td></tr>
+    </tbody>
+  </table>
+
+  <table>
+    <caption>LEI DO INVERSO DO QUADRADO</caption>
+    <tbody>
+      <tr><th>fórmula</th><td>dose ∝ atividade / distância²</td></tr>
+      <tr><th>10 cm</th><td>100% da intensidade de referência</td></tr>
+      <tr><th>20 cm</th><td>25%</td></tr>
+      <tr><th>40 cm</th><td>6,25%</td></tr>
+      <tr><th>80 cm</th><td>1,6%</td></tr>
+    </tbody>
+  </table>
+
+  <p class="nota">
+    Caderno de M. C., margem da p.114:<br>
+    "O chumbo protege, mas cega — nada brilha atrás dele."<br><br>
+    "Quatro sais ativos. Enfileirados por prótons, do menor ao maior,
+    seus algarismos deram o ano em que o mundo soube de nós."
+  </p>
+</template>
+
+<template id="tplPorta">
+  <p class="mod-texto">
+    Painel eletromecânico. Quatro algarismos.<br>
+    Três falhas consecutivas acionam purga de dados.
+  </p>
+  <div id="parcial" class="parcial"></div>
+  <div class="teclado-wrap">
+    <input type="text" id="senha" maxlength="4" inputmode="numeric" placeholder="0000">
+    <button id="btnAbrir" class="btn-pri">DESTRAVAR</button>
+  </div>
+  <div class="vidas" id="vidas"></div>
+  <p class="fb" id="fbPorta"></p>
+</template>
+
+<script src="sala2.js" defer></script>
+</body>
+</html>
