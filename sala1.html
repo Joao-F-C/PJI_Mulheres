@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#05060a">
+    <meta name="color-scheme" content="dark">
+    <meta name="description" content="Sala 1 — Ada Lovelace. Laboratório de Computação do Projeto Athena.">
+
+    <title>Sala 1 — Ada Lovelace | Projeto Athena</title>
+
+    <!-- ===== FONTES ===== -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;500;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="sala1.css">
+</head>
+<body>
+
+<!-- ============================================================
+     INTRO DA SALA
+     ============================================================ -->
+<div id="intro-sala" class="intro-sala">
+    <div class="intro-conteudo glass">
+        <span class="intro-numero">SALA 01 / 05</span>
+        <h1 class="intro-nome" data-texto="ADA LOVELACE">ADA LOVELACE</h1>
+        <p class="intro-desc">Laboratório de Computação Analítica</p>
+
+        <div class="intro-divisor" aria-hidden="true"></div>
+
+        <p class="intro-objetivo">
+            Os registros de Ada foram criptografados pela ERIS.
+            Investigue o ambiente, recupere a credencial de acesso e
+            descubra o código de liberação da porta.
+        </p>
+
+        <button class="intro-btn" id="intro-pular" type="button">Entrar no Laboratório</button>
+    </div>
+</div>
+
+<!-- ============================================================
+     HUD DA SALA (topo)
+     ============================================================ -->
+<header class="hud-sala" id="hud-sala">
+    <div class="hud-esq">
+        <span class="hud-sala-nome">
+            <i class="led led-alerta" aria-hidden="true"></i>
+            SALA 01 — ADA LOVELACE
+        </span>
+    </div>
+
+    <!-- Trilha de progresso do enigma -->
+    <ol class="hud-etapas" id="hud-etapas" aria-label="Progresso do enigma">
+        <li class="etapa" data-etapa="pista">
+            <span class="etapa-ponto" aria-hidden="true"></span>
+            <span class="etapa-txt">Credencial</span>
+        </li>
+        <li class="etapa" data-etapa="login">
+            <span class="etapa-ponto" aria-hidden="true"></span>
+            <span class="etapa-txt">Acesso</span>
+        </li>
+        <li class="etapa" data-etapa="codigo">
+            <span class="etapa-ponto" aria-hidden="true"></span>
+            <span class="etapa-txt">Código</span>
+        </li>
+        <li class="etapa" data-etapa="porta">
+            <span class="etapa-ponto" aria-hidden="true"></span>
+            <span class="etapa-txt">Saída</span>
+        </li>
+    </ol>
+
+    <div class="hud-dir">
+        <span class="hud-timer" id="hud-timer" aria-label="Tempo decorrido">00:00</span>
+
+        <button class="btn-icone" id="btn-dica" type="button" aria-label="Pedir uma dica">
+            <span class="icone-dica" aria-hidden="true"></span>
+        </button>
+
+        <button class="btn-icone" id="btn-som-sala" type="button"
+                aria-pressed="true" aria-label="Ligar ou desligar o som">
+            <span class="icone-som" aria-hidden="true"></span>
+        </button>
+
+        <button class="btn-icone" id="btn-full-sala" type="button" aria-label="Alternar tela cheia">
+            <span class="icone-expandir" aria-hidden="true"></span>
+        </button>
+
+        <button class="btn-icone btn-sair" id="btn-menu" type="button" aria-label="Voltar ao menu">
+            <span class="icone-sair" aria-hidden="true"></span>
+        </button>
+    </div>
+</header>
+
+<!-- ============================================================
+     O LABORATÓRIO
+     ============================================================ -->
+<main id="laboratorio" class="laboratorio">
+
+    <!-- ---------- ILUMINAÇÃO ---------- -->
+    <div class="luz-ambiente luz-teto"   aria-hidden="true"></div>
+    <div class="luz-ambiente luz-neon-1" aria-hidden="true"></div>
+    <div class="luz-ambiente luz-neon-2" aria-hidden="true"></div>
+    <div class="poeira" aria-hidden="true"></div>
+
+    <!-- ---------- PAREDE DE FUNDO ---------- -->
+    <div class="parede">
+
+        <!-- Painéis técnicos decorativos -->
+        <div class="painel-tecnico pt-1" aria-hidden="true">
+            <span class="pt-linha"></span><span class="pt-linha"></span><span class="pt-linha"></span>
+        </div>
+        <div class="painel-tecnico pt-2" aria-hidden="true">
+            <span class="pt-linha"></span><span class="pt-linha"></span>
+        </div>
+
+        <!-- Duto de ventilação -->
+        <div class="objeto duto" data-nome="Duto de Ventilação"
+             data-msg="Ar frio desce pelas grades. Nada acessível aqui." tabindex="0" role="button">
+            <span class="grade"></span><span class="grade"></span>
+            <span class="grade"></span><span class="grade"></span>
+        </div>
+
+        <!-- Placa neon com o nome do laboratório -->
+        <div class="objeto placa-neon" data-nome="Placa"
+             data-msg="LAB. ANALÍTICO — Unidade de Computação Histórica." tabindex="0" role="button">
+            <span class="placa-txt">LAB · ANALYTICAL</span>
+        </div>
+
+        <!-- Relógio digital da estação -->
+        <div class="objeto relogio" data-nome="Relógio da Estação"
+             data-msg="Marca a hora local de 2150. Curiosamente, a data do sistema foi revertida para 1843."
+             tabindex="0" role="button">
+            <span class="relogio-visor" id="relogio-visor">--:--</span>
+            <span class="relogio-label">HORA LOCAL</span>
+        </div>
+
+        <!-- JANELA com vista do espaço -->
+        <div class="objeto janela" data-nome="Janela"
+             data-msg="A estação orbita a Terra. Daqui, dá para ver a curvatura do planeta."
+             tabindex="0" role="button">
+            <div class="janela-vidro">
+                <div class="estrela e1"></div>
+                <div class="estrela e2"></div>
+                <div class="estrela e3"></div>
+                <div class="estrela e4"></div>
+                <div class="estrela e5"></div>
+                <div class="planeta"></div>
+                <div class="nave" aria-hidden="true"></div>
+            </div>
+            <div class="janela-moldura"></div>
+            <div class="janela-reflexo" aria-hidden="true"></div>
+        </div>
+
+        <!-- QUADRO com anotações (pista INDIRETA — não entrega o número) -->
+        <div class="objeto quadro" data-nome="Quadro de Notas" id="quadro" tabindex="0" role="button">
+            <div class="quadro-tela">
+                <span class="quadro-titulo">NOTAS · A</span>
+                <span class="quadro-conteudo">
+                    Máquina Analítica<br>
+                    sequência de Bernoulli<br>
+                    <span class="quadro-rasurado">[dados apagados]</span>
+                </span>
+                <span class="quadro-giz" aria-hidden="true"></span>
+            </div>
+            <div class="quadro-moldura" aria-hidden="true"></div>
+        </div>
+
+        <!-- ESTANTE de livros -->
+        <div class="objeto estante" data-nome="Estante" id="estante">
+            <div class="prateleira">
+                <div class="livro livro-a" data-titulo="Cálculo Diferencial"></div>
+                <div class="livro livro-b" data-titulo="Mecânica Celeste"></div>
+                <div class="livro livro-c livro-pista" id="livro-pista"
+                     data-titulo="Notes by A.A.L." tabindex="0" role="button"
+                     aria-label="Livro com marcador brilhante"></div>
+                <div class="livro livro-d" data-titulo="Teoria dos Números"></div>
+                <div class="livro livro-h" data-titulo="Tábuas Logarítmicas"></div>
+            </div>
+            <div class="prateleira">
+                <div class="livro livro-e" data-titulo="Álgebra Simbólica"></div>
+                <div class="livro livro-f" data-titulo="Motor Diferencial"></div>
+                <div class="livro livro-g" data-titulo="Cartas a Babbage"></div>
+                <div class="objeto-mini globo" data-nome="Globo" aria-hidden="true"></div>
+            </div>
+        </div>
+
+        <!-- ARMÁRIO (trancado — abre com credencial) -->
+        <div class="objeto armario trancado" data-nome="Armário Blindado" id="armario"
+             tabindex="0" role="button">
+            <div class="armario-porta esq"></div>
+            <div class="armario-porta dir"></div>
+            <div class="armario-interior" aria-hidden="true">
+                <div class="armario-item ai-pendrive"></div>
+                <div class="armario-item ai-caixa"></div>
+            </div>
+            <div class="armario-fechadura">
+                <span class="fechadura-led"></span>
+            </div>
+            <span class="armario-etiqueta" aria-hidden="true">SEC-01</span>
+        </div>
+
+        <!-- RACK DE SERVIDORES (novo) -->
+        <div class="objeto rack" data-nome="Rack de Servidores"
+             data-msg="Servidores da ERIS. Um dos nós está com o LED vermelho: dados de Ada corrompidos."
+             tabindex="0" role="button">
+            <div class="rack-slot"><span class="rack-led led-v"></span></div>
+            <div class="rack-slot"><span class="rack-led led-c"></span></div>
+            <div class="rack-slot"><span class="rack-led led-c"></span></div>
+            <div class="rack-slot"><span class="rack-led led-m"></span></div>
+            <div class="rack-slot"><span class="rack-led led-c"></span></div>
+            <div class="rack-vent" aria-hidden="true"></div>
+        </div>
+
+        <!-- PAINEL DE CONTROLE (novo) -->
+        <div class="objeto painel-ctrl" data-nome="Painel de Controle"
+             data-msg="Sistema de energia estável. As luzes da sala respondem a este painel."
+             tabindex="0" role="button">
+            <div class="pc-mostrador">
+                <span class="pc-agulha"></span>
+            </div>
+            <div class="pc-botoes">
+                <span class="pc-btn"></span><span class="pc-btn"></span><span class="pc-btn"></span>
+            </div>
+            <div class="pc-barras" aria-hidden="true">
+                <span></span><span></span><span></span><span></span>
+            </div>
+        </div>
+
+        <!-- CARTAZ / PÔSTER (novo) -->
+        <div class="objeto cartaz" data-nome="Cartaz Histórico"
+             data-msg="Pôster do Projeto Athena: 'A ciência tem nome de mulher'. Assinado por quatro pesquisadoras."
+             tabindex="0" role="button">
+            <span class="cartaz-titulo">ATHENA</span>
+            <span class="cartaz-sub">A CIÊNCIA TEM<br>NOME DE MULHER</span>
+            <span class="cartaz-selo" aria-hidden="true"></span>
+        </div>
+
+    </div><!-- /parede -->
+
+    <!-- ---------- CHÃO ---------- -->
+    <div class="chao" aria-hidden="true"></div>
+    <div class="tapete" aria-hidden="true"></div>
+
+    <!-- ---------- MESA PRINCIPAL ---------- -->
+    <div class="objeto mesa" data-nome="Mesa de Trabalho"
+         data-msg="Papéis com anotações a lápis, todos sem os números finais. Alguém apagou os dados."
+         tabindex="0" role="button">
+
+        <div class="mesa-tampo"></div>
+        <div class="mesa-perna esq"></div>
+        <div class="mesa-perna dir"></div>
+        <div class="mesa-gaveta" aria-hidden="true"><span class="gaveta-puxador"></span></div>
+
+        <!-- COMPUTADOR -->
+        <div class="objeto computador" data-nome="Computador" id="computador"
+             tabindex="0" role="button" aria-label="Ligar o computador">
+            <div class="monitor">
+                <div class="tela-monitor">
+                    <span class="tela-standby">CLIQUE PARA LIGAR</span>
+                    <span class="tela-scan" aria-hidden="true"></span>
+                </div>
+            </div>
+            <div class="monitor-pe" aria-hidden="true"></div>
+            <div class="base-monitor"></div>
+            <!-- Teclado retrô sobre a mesa -->
+            <div class="teclado-fisico" aria-hidden="true">
+                <span></span><span></span><span></span><span></span>
+                <span></span><span></span><span></span><span></span>
+            </div>
+        </div>
+
+        <!-- TUBOS DE ENSAIO -->
+        <div class="objeto tubos" data-nome="Tubos de Ensaio"
+             data-msg="Reagentes de manutenção. Nada relacionado ao enigma."
+             tabindex="0" role="button">
+            <div class="tubo t1"><span class="bolha"></span></div>
+            <div class="tubo t2"><span class="bolha"></span></div>
+            <div class="tubo t3"><span class="bolha"></span></div>
+            <div class="suporte-tubos" aria-hidden="true"></div>
+        </div>
+
+        <!-- CANECA (novo, decorativo com humor) -->
+        <div class="objeto caneca" data-nome="Caneca"
+             data-msg="Café frio. A caneca diz: 'Primeiro o algoritmo, depois o resto'."
+             tabindex="0" role="button">
+            <span class="caneca-alca" aria-hidden="true"></span>
+            <span class="caneca-vapor" aria-hidden="true"></span>
+        </div>
+
+        <!-- LUMINÁRIA DE MESA (novo) -->
+        <div class="objeto luminaria" data-nome="Luminária"
+             data-msg="A luz ainda funciona. Ilumina um caderno em branco." tabindex="0" role="button">
+            <span class="lum-base" aria-hidden="true"></span>
+            <span class="lum-braco" aria-hidden="true"></span>
+            <span class="lum-cupula" aria-hidden="true"></span>
+            <span class="lum-feixe" aria-hidden="true"></span>
+        </div>
+    </div>
+
+    <!-- ---------- CADEIRA (novo) ---------- -->
+    <div class="objeto cadeira" data-nome="Cadeira"
+         data-msg="Cadeira giratória vazia. O assento ainda está levemente aquecido."
+         tabindex="0" role="button">
+        <span class="cad-encosto" aria-hidden="true"></span>
+        <span class="cad-assento" aria-hidden="true"></span>
+        <span class="cad-haste" aria-hidden="true"></span>
+        <span class="cad-base" aria-hidden="true"></span>
+    </div>
+
+    <!-- ---------- MÁQUINA ANALÍTICA (novo — peça-tema da sala) ---------- -->
+    <div class="objeto maquina" data-nome="Máquina Analítica"
+         data-msg="Réplica da Máquina Analítica de Babbage. As engrenagens giram, mas o cartão perfurado de entrada está faltando."
+         tabindex="0" role="button">
+        <div class="maq-corpo">
+            <span class="engrenagem eng-1" aria-hidden="true"></span>
+            <span class="engrenagem eng-2" aria-hidden="true"></span>
+            <span class="engrenagem eng-3" aria-hidden="true"></span>
+            <div class="maq-cilindros" aria-hidden="true">
+                <span></span><span></span><span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="maq-base" aria-hidden="true"></div>
+        <span class="maq-placa" aria-hidden="true">ANALYTICAL ENGINE</span>
+    </div>
+
+    <!-- ---------- VASO DE PLANTA (novo) ---------- -->
+    <div class="objeto planta" data-nome="Planta"
+         data-msg="Planta hidropônica. Cresce sob luz artificial há décadas."
+         tabindex="0" role="button">
+        <span class="folha f1" aria-hidden="true"></span>
+        <span class="folha f2" aria-hidden="true"></span>
+        <span class="folha f3" aria-hidden="true"></span>
+        <span class="vaso" aria-hidden="true"></span>
+    </div>
+
+    <!-- ---------- HOLOGRAMA (novo — dá contexto da missão) ---------- -->
+    <div class="objeto holograma" data-nome="Projetor Holográfico"
+         data-msg="O projetor exibe o brasão do Projeto Athena e uma contagem: 4 arquivos perdidos, 0 recuperados."
+         tabindex="0" role="button">
+        <span class="holo-base" aria-hidden="true"></span>
+        <div class="holo-feixe" aria-hidden="true">
+            <span class="holo-anel a1"></span>
+            <span class="holo-anel a2"></span>
+            <span class="holo-anel a3"></span>
+            <span class="holo-nucleo"></span>
+        </div>
+    </div>
+
+    <!-- ---------- LIXEIRA (novo — esconde um bilhete) ---------- -->
+    <div class="objeto lixeira" data-nome="Lixeira" id="lixeira" tabindex="0" role="button">
+        <span class="lix-corpo" aria-hidden="true"></span>
+        <span class="lix-tampa" aria-hidden="true"></span>
+        <span class="lix-brilho" aria-hidden="true"></span>
+    </div>
+
+    <!-- ---------- PORTA FUTURISTA ---------- -->
+    <div class="objeto porta trancada" data-nome="Porta de Saída" id="porta">
+        <div class="porta-batente" aria-hidden="true"></div>
+        <div class="porta-metade esq">
+            <span class="porta-listra"></span>
+            <span class="porta-listra"></span>
+        </div>
+        <div class="porta-metade dir">
+            <span class="porta-listra"></span>
+            <span class="porta-listra"></span>
+        </div>
+        <div class="porta-vao" aria-hidden="true"></div>
+        <div class="porta-luz-frame" aria-hidden="true"></div>
+
+        <button class="porta-painel" id="abrir-teclado" type="button"
+                aria-label="Abrir teclado numérico da porta">
+            <span class="painel-icone" aria-hidden="true"></span>
+            <span class="painel-texto" id="painel-texto">TRAVADA</span>
+        </button>
+    </div>
+
+    <!-- Tooltip flutuante -->
+    <div class="tooltip" id="tooltip" role="tooltip" aria-hidden="true"></div>
+
+</main>
+
+<!-- ============================================================
+     LEGENDA / NARRAÇÃO (feedback de exploração)
+     ============================================================ -->
+<div class="legenda" id="legenda" role="status" aria-live="polite" hidden>
+    <p class="legenda-txt" id="legenda-txt"></p>
+</div>
+
+<!-- ============================================================
+     SISTEMA OPERACIONAL FALSO
+     ============================================================ -->
+<div id="janela-so" class="janela-so" role="dialog" aria-modal="true"
+     aria-label="Computador do laboratório" hidden>
+    <div class="so-conteudo glass">
+
+        <div class="so-barra">
+            <span class="so-luzes" aria-hidden="true">
+                <i></i><i></i><i></i>
+            </span>
+            <span class="so-titulo">ATHENA OS v2.15</span>
+            <span class="so-status" id="so-status">SESSÃO: ANÔNIMA</span>
+            <button class="so-fechar" id="fechar-so" type="button" aria-label="Fechar computador">
+                <span aria-hidden="true">&#10005;</span>
+            </button>
+        </div>
+
+        <div class="so-corpo">
+            <nav class="so-menu" aria-label="Aplicativos">
+                <button class="so-app ativo" data-app="area"      type="button">Área de Trabalho</button>
+                <button class="so-app"       data-app="terminal"  type="button">Terminal</button>
+                <button class="so-app"       data-app="arquivos"  type="button">Arquivos</button>
+                <button class="so-app"       data-app="mensagens" type="button">
+                    Mensagens <span class="badge" id="badge-msg">2</span>
+                </button>
+                <button class="so-app"       data-app="ajuda"     type="button">Ajuda</button>
+                <button class="so-app"       data-app="config"    type="button">Configurações</button>
+            </nav>
+
+            <section class="so-tela">
+
+                <!-- ÁREA DE TRABALHO -->
+                <div class="so-view ativo" data-view="area">
+                    <div class="area-icones">
+                        <button class="area-icone" data-abrir="terminal" type="button">
+                            <span class="ai-img ai-terminal" aria-hidden="true"></span>
+                            <span>Terminal</span>
+                        </button>
+                        <button class="area-icone" data-abrir="arquivos" type="button">
+                            <span class="ai-img ai-arquivos" aria-hidden="true"></span>
+                            <span>Arquivos</span>
+                        </button>
+                        <button class="area-icone" data-abrir="mensagens" type="button">
+                            <span class="ai-img ai-mensagens" aria-hidden="true"></span>
+                            <span>Mensagens</span>
+                        </button>
+                        <button class="area-icone" data-abrir="ajuda" type="button">
+                            <span class="ai-img ai-ajuda" aria-hidden="true"></span>
+                            <span>Ajuda</span>
+                        </button>
+                    </div>
+
+                    <p class="area-boas-vindas">
+                        Terminal <strong>ATHENA OS</strong> — estação de Ada Lovelace.<br>
+                        Sessão anônima detectada. Recursos protegidos exigem autenticação.<br>
+                        Abra o <strong>Terminal</strong> e execute <code>help</code>.
+                    </p>
+
+                    <div class="area-alerta">
+                        <span class="area-alerta-tag">ERIS</span>
+                        <p>Rotina de exclusão em andamento. Este nó será formatado.</p>
+                    </div>
+                </div>
+
+                <!-- TERMINAL -->
+                <div class="so-view" data-view="terminal">
+                    <div class="terminal" id="terminal">
+                        <div class="terminal-saida" id="terminal-saida" aria-live="polite"></div>
+                        <label class="terminal-linha" for="terminal-input">
+                            <span class="terminal-prompt" id="terminal-prompt">athena@eris:~$</span>
+                            <input type="text" id="terminal-input"
+                                   autocomplete="off" spellcheck="false"
+                                   autocapitalize="off" aria-label="Linha de comando">
+                            <span class="terminal-cursor" aria-hidden="true"></span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- ARQUIVOS -->
+                <div class="so-view" data-view="arquivos">
+                    <p class="so-aviso" id="arquivos-aviso">
+                        Diretório protegido. Autentique-se no <strong>Terminal</strong>
+                        com <code>login &lt;senha&gt;</code>.
+                    </p>
+                    <div class="arquivos-lista" id="arquivos-lista">
+                        <button class="arquivo bloqueado" type="button" data-arquivo="ada_algoritmo.dat">
+                            <span class="arq-icone" aria-hidden="true"></span>
+                            <span class="arq-nome">ada_algoritmo.dat</span>
+                            <span class="arq-tam">12 KB</span>
+                        </button>
+                        <button class="arquivo bloqueado" type="button" data-arquivo="notas_maquina.txt">
+                            <span class="arq-icone" aria-hidden="true"></span>
+                            <span class="arq-nome">notas_maquina.txt</span>
+                            <span class="arq-tam">4 KB</span>
+                        </button>
+                        <button class="arquivo bloqueado" type="button" data-arquivo="bernoulli.log">
+                            <span class="arq-icone" aria-hidden="true"></span>
+                            <span class="arq-nome">bernoulli.log</span>
+                            <span class="arq-tam">7 KB</span>
+                        </button>
+                        <button class="arquivo bloqueado" type="button" data-arquivo="codigo_porta.enc">
+                            <span class="arq-icone arq-lock" aria-hidden="true"></span>
+                            <span class="arq-nome">codigo_porta.enc</span>
+                            <span class="arq-tam">1 KB</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- MENSAGENS -->
+                <div class="so-view" data-view="mensagens">
+                    <div class="mensagem">
+                        <span class="msg-de">DE: COMANDO ATHENA — prioridade alta</span>
+                        <p>Agente, a ERIS trancou os registros de Ada Lovelace.
+                        A credencial de acesso foi escondida por ela mesma
+                        <strong>dentro de um dos livros da estante</strong> — procure o volume marcado.</p>
+                    </div>
+
+                    <div class="mensagem">
+                        <span class="msg-de msg-eris-de">DE: ERIS</span>
+                        <p class="msg-eris">Você não vai conseguir. Cada segundo aqui
+                        aproxima a exclusão total. Desista, agente.</p>
+                    </div>
+
+                    <div class="mensagem mensagem-nova" id="msg-extra" hidden>
+                        <span class="msg-de">DE: ARQUIVO RECUPERADO</span>
+                        <p>Fragmento restaurado: <em>"...as notas foram publicadas no ano em que
+                        descrevi o cálculo dos números de Bernoulli. Esse ano abre todas as portas."</em></p>
+                    </div>
+                </div>
+
+                <!-- AJUDA -->
+                <div class="so-view" data-view="ajuda">
+                    <h3>Comandos do Terminal</h3>
+                    <ul class="ajuda-lista">
+                        <li><code>help</code> — lista todos os comandos</li>
+                        <li><code>login &lt;senha&gt;</code> — autentica a sessão</li>
+                        <li><code>list</code> — lista os arquivos do diretório</li>
+                        <li><code>open &lt;arquivo&gt;</code> — abre e decodifica um arquivo</li>
+                        <li><code>scan</code> — varre o sistema por dados corrompidos</li>
+                        <li><code>whoami</code> — exibe a sessão atual</li>
+                        <li><code>clear</code> — limpa a tela</li>
+                        <li><code>exit</code> — desliga o computador</li>
+                    </ul>
+                    <p class="so-aviso">
+                        Dica: use <kbd>↑</kbd> e <kbd>↓</kbd> para navegar no histórico
+                        e <kbd>Tab</kbd> para autocompletar.
+                    </p>
+                </div>
+
+                <!-- CONFIGURAÇÕES -->
+                <div class="so-view" data-view="config">
+                    <h3>Configurações</h3>
+
+                    <label class="config-item" for="config-som">
+                        <span>Som do sistema</span>
+                        <input type="checkbox" id="config-som" checked>
+                    </label>
+
+                    <label class="config-item" for="config-scan">
+                        <span>Efeito de scanline</span>
+                        <input type="checkbox" id="config-scan" checked>
+                    </label>
+
+                    <label class="config-item" for="config-tooltip">
+                        <span>Mostrar nome dos objetos</span>
+                        <input type="checkbox" id="config-tooltip" checked>
+                    </label>
+
+                    <p class="so-aviso">Núcleo operado pela IA ERIS. Permissões limitadas.</p>
+
+                    <button class="btn-fechar-generico" id="config-reiniciar" type="button">
+                        Reiniciar esta sala
+                    </button>
+                </div>
+
+            </section>
+        </div>
+    </div>
+</div>
+
+<!-- ============================================================
+     LIVRO ABERTO
+     ============================================================ -->
+<div id="modal-livro" class="modal-livro" role="dialog" aria-modal="true"
+     aria-label="Livro aberto" hidden>
+    <div class="livro-aberto">
+        <div class="livro-lombada" aria-hidden="true"></div>
+        <div class="pagina pagina-esq" id="pagina-esq"></div>
+        <div class="pagina pagina-dir" id="pagina-dir"></div>
+
+        <span class="livro-marcador" aria-hidden="true"></span>
+
+        <button class="livro-fechar" id="fechar-livro" type="button">Fechar Livro</button>
+        <button class="pagina-btn pagina-prev" id="pagina-prev" type="button"
+                aria-label="Página anterior">&#8249;</button>
+        <button class="pagina-btn pagina-next" id="pagina-next" type="button"
+                aria-label="Próxima página">&#8250;</button>
+
+        <span class="livro-paginacao" id="livro-paginacao">1 / 3</span>
+    </div>
+</div>
+
+<!-- ============================================================
+     QUADRO AMPLIADO (pista indireta — sem o número final)
+     ============================================================ -->
+<div id="modal-quadro" class="modal-quadro" role="dialog" aria-modal="true"
+     aria-label="Quadro ampliado" hidden>
+    <div class="quadro-zoom glass">
+        <p class="quadro-zoom-titulo">QUADRO DE NOTAS · A.A.L.</p>
+
+        <p class="quadro-zoom-texto">
+            "A Máquina Analítica tece padrões algébricos como o tear tece flores e folhas."
+        </p>
+
+        <div class="quadro-zoom-bloco">
+            <p><strong>Registro parcial recuperado:</strong></p>
+            <p class="quadro-zoom-linha">Nascimento . . . . . . <span class="apagado">18██</span></p>
+            <p class="quadro-zoom-linha">Notas publicadas . . . <span class="apagado">1█4█</span></p>
+            <p class="quadro-zoom-linha">Assunto . . . . . . . . números de Bernoulli</p>
+        </div>
+
+        <p class="quadro-zoom-hint">
+            A ERIS apagou os dígitos. O ano completo só existe nos arquivos do computador.
+        </p>
+
+        <button class="btn-fechar-generico" id="fechar-quadro" type="button">Fechar</button>
+    </div>
+</div>
+
+<!-- ============================================================
+     BILHETE (encontrado na lixeira)
+     ============================================================ -->
+<div id="modal-bilhete" class="modal-bilhete" role="dialog" aria-modal="true"
+     aria-label="Bilhete rasgado" hidden>
+    <div class="bilhete">
+        <p class="bilhete-texto">
+            "Se a ERIS bloquear o acesso, minhas iniciais estão no volume
+            marcado da estante. Três letras. Sempre foram três letras."
+        </p>
+        <span class="bilhete-rasgo" aria-hidden="true"></span>
+        <button class="btn-fechar-generico" id="fechar-bilhete" type="button">Guardar</button>
+    </div>
+</div>
+
+<!-- ============================================================
+     TECLADO NUMÉRICO DA PORTA
+     ============================================================ -->
+<div id="modal-teclado" class="modal-teclado" role="dialog" aria-modal="true"
+     aria-label="Teclado numérico" hidden>
+    <div class="teclado glass">
+        <p class="teclado-titulo">TRAVA ELETRÔNICA · 4 DÍGITOS</p>
+
+        <div class="teclado-visor" id="teclado-visor" aria-live="polite">- - - -</div>
+
+        <p class="teclado-tentativas" id="teclado-tentativas">Tentativas: 0</p>
+
+        <div class="teclado-teclas">
+            <button class="tecla" type="button">1</button>
+            <button class="tecla" type="button">2</button>
+            <button class="tecla" type="button">3</button>
+            <button class="tecla" type="button">4</button>
+            <button class="tecla" type="button">5</button>
+            <button class="tecla" type="button">6</button>
+            <button class="tecla" type="button">7</button>
+            <button class="tecla" type="button">8</button>
+            <button class="tecla" type="button">9</button>
+            <button class="tecla tecla-limpar" type="button" aria-label="Limpar">C</button>
+            <button class="tecla" type="button">0</button>
+            <button class="tecla tecla-ok" id="tecla-ok" type="button" aria-label="Confirmar">OK</button>
+        </div>
+
+        <button class="btn-fechar-generico" id="fechar-teclado" type="button">Cancelar</button>
+    </div>
+</div>
+
+<!-- ============================================================
+     PAINEL DE DICAS
+     ============================================================ -->
+<div id="modal-dica" class="modal-dica-wrap" role="dialog" aria-modal="true"
+     aria-label="Dica" hidden>
+    <div class="dica-caixa glass">
+        <span class="dica-tag">TRANSMISSÃO ATHENA</span>
+        <p class="dica-texto" id="dica-texto"></p>
+        <button class="btn-fechar-generico" id="fechar-dica" type="button">Entendido</button>
+    </div>
+</div>
+
+<!-- ============================================================
+     CONCLUSÃO DA SALA
+     ============================================================ -->
+<div id="conclusao-sala" class="conclusao-sala" role="dialog" aria-modal="true"
+     aria-label="Arquivo recuperado" hidden>
+    <div class="conclusao-conteudo glass">
+
+        <span class="conclusao-tag">
+            <i class="led led-ok" aria-hidden="true"></i> ARQUIVO 01 RECUPERADO
+        </span>
+
+        <div class="conclusao-retrato" aria-hidden="true">
+            <span class="retrato-silhueta"></span>
+        </div>
+
+        <h2>Ada Lovelace</h2>
+        <p class="conclusao-anos">Londres, 1815 — 1852</p>
+
+        <p class="conclusao-texto">
+            Matemática inglesa reconhecida como a
+            <strong>primeira programadora da história</strong>. Trabalhando sobre a
+            Máquina Analítica de Charles Babbage, publicou em <strong>1843</strong>
+            um conjunto de notas que continha o
+            <strong>primeiro algoritmo</strong> concebido para ser executado por
+            uma máquina — o cálculo dos números de Bernoulli.
+        </p>
+
+        <p class="conclusao-texto">
+            Mais do que calcular, Ada previu que máquinas poderiam manipular
+            <strong>símbolos</strong>, compor música e criar arte. Enxergou a
+            computação um século antes do primeiro computador existir.
+        </p>
+
+        <div class="conclusao-fato">
+            <span class="fato-tag">POR QUE IMPORTA</span>
+            <p>O conceito de "programa" — instruções separadas da máquina — nasce
+            com ela. Toda linha de código escrita hoje descende dessas notas.</p>
+        </div>
+
+        <div class="conclusao-stats" id="conclusao-stats">
+            <span class="stat"><b id="stat-tempo">--:--</b>Tempo</span>
+            <span class="stat"><b id="stat-itens">0</b>Itens</span>
+            <span class="stat"><b id="stat-tentativas">0</b>Tentativas</span>
+        </div>
+
+        <button class="btn-neon" id="ir-sala2" type="button">
+            <span class="btn-txt">Avançar para a Sala 2</span>
+        </button>
+    </div>
+</div>
+
+<!-- ============================================================
+     TRANSIÇÕES
+     ============================================================ -->
+<div id="transicao-porta" class="transicao-porta" aria-hidden="true"></div>
+<div id="flash-luz" class="flash-luz" aria-hidden="true"></div>
+
+<!-- ============================================================
+     ÁUDIO
+     ============================================================ -->
+<audio id="musica-sala" loop preload="auto">
+    <source src="assets/sons/sala1.mp3" type="audio/mpeg">
+</audio>
+
+<!-- ============================================================
+     SCRIPTS
+     ============================================================ -->
+<script src="script.js" defer></script>
+<script src="inventario.js" defer></script>
+<script src="sala1.js" defer></script>
+</body>
+</html>

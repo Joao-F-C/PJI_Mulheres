@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ARQUIVO 03 — Estação Lamarr, 1940</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Special+Elite&family=Oswald:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="sala3.css">
+</head>
+<body>
+
+<div id="poeira"></div>
+<div id="lampada"></div>
+
+<!-- BOOT: folha de teletipo -->
+<div id="boot">
+  <div class="folha">
+    <div class="folha-furos"></div>
+    <pre id="bootTxt"></pre>
+    <div class="folha-furos"></div>
+  </div>
+</div>
+
+<!-- ================= BARRA DE BAQUELITE ================= -->
+<header id="barra">
+  <div class="barra-marca">
+    <b>ERIS</b><small>ARQUIVO 03</small>
+  </div>
+
+  <div class="medidor">
+    <svg viewBox="0 0 120 70" aria-hidden="true">
+      <path d="M12 62 A48 48 0 0 1 108 62" fill="none" stroke="#3b2f22" stroke-width="9"/>
+      <path d="M12 62 A48 48 0 0 1 61 14" fill="none" stroke="#7c8f5a" stroke-width="9"/>
+      <path d="M61 14 A48 48 0 0 1 92 27" fill="none" stroke="#c9a227" stroke-width="9"/>
+      <path d="M92 27 A48 48 0 0 1 108 62" fill="none" stroke="#a63c2c" stroke-width="9"/>
+      <g id="medNeedle"><line x1="60" y1="62" x2="60" y2="22" stroke="#1a1207" stroke-width="2.4"/></g>
+      <circle cx="60" cy="62" r="5" fill="#1a1207"/>
+    </svg>
+    <div class="medidor-leg">
+      <span>INTERCEPTAÇÃO</span>
+      <b id="medTxt">0%</b>
+    </div>
+  </div>
+
+  <div class="vu">
+    <div id="vuGraf" class="vu-graf"></div>
+    <span id="vuTxt" class="vu-txt">piso de ruído</span>
+  </div>
+
+  <div class="etiquetas">
+    <span id="chipCanal" class="etq">CANAL · —</span>
+    <span id="chipJam" class="etq">JAMMER · ?</span>
+    <span id="chipCiclo" class="etq">CICLO · 3</span>
+  </div>
+
+  <div class="barra-botoes">
+    <button id="btnDica" class="tecla">DICA <small>+12%</small></button>
+    <button id="btnReset" class="tecla vermelha">RESET</button>
+  </div>
+</header>
+
+<!-- ================= A SALA ================= -->
+<main id="sala">
+
+  <!-- parede -->
+  <div class="parede">
+    <div class="janela">
+      <div class="janela-vidro"></div>
+      <div class="janela-cruz"></div>
+      <span class="janela-tapa">BLACKOUT</span>
+    </div>
+
+    <button class="equip mural" data-est="mural" aria-label="Mural de sinais">
+      <svg viewBox="0 0 120 90">
+        <rect x="4" y="4" width="112" height="82" rx="2" fill="#8a6c44"/>
+        <rect x="9" y="9" width="102" height="72" fill="#c9b48c"/>
+        <g fill="#efe6d2" stroke="#a3906c" stroke-width=".6">
+          <rect x="15" y="15" width="34" height="26" transform="rotate(-3 32 28)"/>
+          <rect x="57" y="18" width="30" height="22" transform="rotate(4 72 29)"/>
+          <rect x="22" y="47" width="40" height="27" transform="rotate(2 42 60)"/>
+          <rect x="70" y="46" width="30" height="30" transform="rotate(-5 85 61)"/>
+        </g>
+        <g fill="#a63c2c"><circle cx="32" cy="16" r="2.2"/><circle cx="72" cy="19" r="2.2"/><circle cx="42" cy="48" r="2.2"/><circle cx="85" cy="47" r="2.2"/></g>
+        <g stroke="#5a4a33" stroke-width=".5" fill="none">
+          <path d="M20 22h24M20 27h20M20 32h24"/><path d="M62 25h20M62 30h14"/>
+          <path d="M28 54h26M28 59h20M28 64h24"/><path d="M76 53h18M76 58h14M76 63h18"/>
+        </g>
+      </svg>
+      <span class="placa">MURAL DE SINAIS</span>
+    </button>
+
+    <button class="equip porta" data-est="porta" aria-label="Painel da porta">
+      <svg viewBox="0 0 90 150">
+        <rect x="2" y="2" width="86" height="146" rx="3" fill="#4a4238"/>
+        <rect x="7" y="7" width="76" height="136" fill="#5c5347"/>
+        <rect x="14" y="16" width="62" height="46" rx="2" fill="#3c352c"/>
+        <rect x="14" y="76" width="62" height="58" rx="2" fill="#3c352c"/>
+        <rect x="20" y="24" width="50" height="30" rx="2" fill="#2a251e"/>
+        <g fill="#c9a227" opacity=".85">
+          <rect x="26" y="30" width="8" height="6"/><rect x="38" y="30" width="8" height="6"/>
+          <rect x="50" y="30" width="8" height="6"/><rect x="26" y="42" width="8" height="6"/>
+          <rect x="38" y="42" width="8" height="6"/><rect x="50" y="42" width="8" height="6"/>
+        </g>
+        <circle id="portaLed" cx="66" cy="70" r="4" fill="#a63c2c"/>
+        <rect x="70" y="88" width="6" height="20" rx="3" fill="#c9a227"/>
+      </svg>
+      <span class="placa">PAINEL DA PORTA</span>
+    </button>
+  </div>
+
+  <!-- bancada -->
+  <div class="bancada">
+    <div class="bancada-tampo">
+
+      <button class="equip receptor" data-est="receptor" aria-label="Banco de receptores">
+        <svg viewBox="0 0 190 120">
+          <rect x="4" y="10" width="182" height="106" rx="7" fill="#6b4b2a"/>
+          <rect x="10" y="16" width="170" height="94" rx="5" fill="#4a3520"/>
+          <rect x="18" y="24" width="86" height="34" rx="3" fill="#e8d9a8"/>
+          <g stroke="#7a6338" stroke-width=".8">
+            <path d="M24 52v-6M34 52v-9M44 52v-6M54 52v-11M64 52v-6M74 52v-9M84 52v-6M94 52v-9"/>
+          </g>
+          <line id="dialAgulha" x1="61" y1="26" x2="61" y2="56" stroke="#a63c2c" stroke-width="1.6"/>
+          <rect x="18" y="66" width="86" height="8" rx="4" fill="#2c2015"/>
+          <circle cx="128" cy="40" r="16" fill="#2c2015"/><circle cx="128" cy="40" r="11" fill="#54402a"/>
+          <line x1="128" y1="40" x2="128" y2="30" stroke="#c9a227" stroke-width="2"/>
+          <circle cx="163" cy="40" r="12" fill="#2c2015"/><circle cx="163" cy="40" r="8" fill="#54402a"/>
+          <g fill="#3a2b1a"><circle cx="124" cy="80" r="7"/><circle cx="144" cy="80" r="7"/><circle cx="164" cy="80" r="7"/></g>
+          <g class="valvula"><ellipse cx="40" cy="88" rx="7" ry="12" fill="#ffb445" opacity=".55"/>
+          <ellipse cx="66" cy="88" rx="7" ry="12" fill="#ffb445" opacity=".4"/>
+          <ellipse cx="92" cy="88" rx="7" ry="12" fill="#ffb445" opacity=".5"/></g>
+        </svg>
+        <span class="placa">BANCO DE RECEPTORES</span>
+      </button>
+
+      <button class="equip osc" data-est="terminal" aria-label="Analisador de espectro">
+        <svg viewBox="0 0 130 120">
+          <rect x="4" y="14" width="122" height="102" rx="6" fill="#3f4a44"/>
+          <rect x="10" y="20" width="110" height="90" rx="4" fill="#2b332e"/>
+          <circle cx="52" cy="58" r="32" fill="#101812"/>
+          <circle cx="52" cy="58" r="28" fill="#122417"/>
+          <path id="oscTraco" d="M26 58q8-16 13 0t13 0 13 0 13 0" fill="none" stroke="#7ef2a1" stroke-width="1.6" opacity=".9"/>
+          <g stroke="#2f4a35" stroke-width=".5">
+            <path d="M26 58h52M52 32v52M39 40v36M65 40v36"/>
+          </g>
+          <g fill="#1a201c"><circle cx="102" cy="38" r="9"/><circle cx="102" cy="62" r="9"/><circle cx="102" cy="86" r="9"/></g>
+          <g stroke="#c9a227" stroke-width="1.6"><path d="M102 38v-6M102 62v-6M102 86v-6"/></g>
+          <rect x="24" y="98" width="56" height="6" rx="3" fill="#1a201c"/>
+        </svg>
+        <span class="placa">ANALISADOR DE ESPECTRO</span>
+      </button>
+
+      <button class="equip gaveta trancado" id="eqCristais" data-est="cristais" aria-label="Gaveta de cristais">
+        <svg viewBox="0 0 120 110">
+          <rect x="6" y="18" width="108" height="88" rx="4" fill="#7a5730"/>
+          <rect x="12" y="24" width="96" height="34" rx="2" fill="#5e421f"/>
+          <rect x="12" y="64" width="96" height="34" rx="2" fill="#5e421f"/>
+          <rect x="40" y="38" width="40" height="5" rx="2.5" fill="#c9a227"/>
+          <rect x="40" y="78" width="40" height="5" rx="2.5" fill="#c9a227"/>
+          <g id="cadeado"><circle cx="60" cy="12" r="9" fill="#8a8378"/>
+            <path d="M54 12v-4a6 6 0 0 1 12 0v4" fill="none" stroke="#8a8378" stroke-width="2.6"/>
+            <rect x="58" y="10" width="4" height="6" fill="#2a251e"/></g>
+        </svg>
+        <span class="placa">GAVETA DE CRISTAIS</span>
+      </button>
+
+    </div>
+    <div class="bancada-frente"></div>
+  </div>
+
+  <p class="rodape">ESTAÇÃO LAMARR · SETOR DE ESCUTA · 1940 — clique em um equipamento</p>
+</main>
+
+<!-- ================= CLOSE-UP (desliza da direita) ================= -->
+<aside id="painel" hidden>
+  <div class="painel-caixa">
+    <header>
+      <span class="painel-parafuso"></span>
+      <h2 id="painelTit"></h2>
+      <button id="painelFechar" aria-label="Fechar">RECUAR ✕</button>
+      <span class="painel-parafuso"></span>
+    </header>
+    <div id="painelCorpo"></div>
+  </div>
+</aside>
+
+<!-- ================= FIM ================= -->
+<div id="fim" hidden>
+  <div id="fimCard" class="fim-card">
+    <div class="fim-selo">ERIS</div>
+    <h2 id="fimTit"></h2>
+    <p id="fimTxt"></p>
+    <div id="fimStats" class="fim-stats"></div>
+    <div class="fim-btns">
+      <button id="btnContinuar" class="tecla">CONTINUAR</button>
+      <button id="btnReiniciar" class="tecla">REINICIAR SALA</button>
+    </div>
+  </div>
+</div>
+
+<!-- ================= TEMPLATES ================= -->
+
+<template id="tplReceptor">
+  <p class="lead">Nada está catalogado. <b>Varra</b> a faixa às cegas, <b>trave</b> as três
+     portadoras pelo calor do sinal e <b>cruze</b> os fragmentos. Trava fria realoca tudo.</p>
+
+  <div class="varredura">
+    <div class="calor" id="barraCalor" data-calor="frio">
+      <span class="calor-rot" id="calorTxt">FRIO</span>
+    </div>
+
+    <div class="dial-linha">
+      <input type="range" id="dial" min="500" max="7000" step="10" value="1180">
+      <output id="dialTxt">1180 kHz</output>
+    </div>
+
+    <div class="dial-escala"><span>500</span><span>3750</span><span>7000</span></div>
+
+    <button id="btnTravar" class="btn-acao">TRAVAR PORTADORA</button>
+    <p class="tentativas">TENTATIVAS · <b id="tentTxt">3</b></p>
+  </div>
+
+  <div class="ctrl coluna">
+    <span class="ctrl-rot">FRAGMENTOS TRAVADOS · arraste para ordenar</span>
+    <ul id="fragmentos" class="fragmentos"><li class="vazio">nenhuma portadora travada</li></ul>
+  </div>
+
+  <div class="previa">
+    <div><span>portadoras</span><b id="prevRisco">0/3</b></div>
+    <div><span>SNR travado</span><b id="prevSnr">—</b></div>
+    <div><span>sincronismo</span><b id="prevSync">—</b></div>
+  </div>
+
+  <button id="btnDecodificar" class="btn-acao">DECODIFICAR</button>
+  <div id="fbLer" class="fb"></div>
+</template>
+
+
+<template id="tplTerminal">
+  <p class="lead">A varredura custa <b>2%</b> e revela a posição atual do jammer.
+     Ele salta de canal a cada 3 ações.</p>
+  <div class="crt"><div id="oscBarras" class="crt-barras"></div><span class="crt-grade"></span></div>
+  <div id="dbuTela" class="visor">—</div>
+  <button id="btnVarrer" class="btn-acao">VARRER CANAL SELECIONADO</button>
+  <table class="tab">
+    <thead><tr><th>canal</th><th>ganho</th><th>dBu</th><th>estado</th></tr></thead>
+    <tbody id="logDbu"><tr><td colspan="4">sem varreduras</td></tr></tbody>
+  </table>
+</template>
+
+<template id="tplCristais">
+  <p class="lead">Trava dupla no rolo perfurado: o <b>número de teclas</b> e a
+     <b>ordem dos rolos</b>.</p>
+  <div id="parcialCofre" class="parcial"></div>
+  <div class="ctrl">
+    <label>TECLAS <input id="cofre" maxlength="2" placeholder="??" autocomplete="off"></label>
+    <label>ORDEM <input id="cofreOrd" maxlength="4" placeholder="????" autocomplete="off"></label>
+  </div>
+  <div id="vidasCofre" class="vidas"></div>
+  <button id="btnCofre" class="btn-acao">FORÇAR TRAVA</button>
+  <div id="fbCofre" class="fb"></div>
+</template>
+
+<template id="tplMural">
+  <h3>SINCRONISMO EXIGIDO</h3>
+  <table class="tab">
+    <thead><tr><th>modulação</th><th>taxa de salto</th></tr></thead>
+    <tbody>
+      <tr><td>AM</td><td>LENTO</td></tr>
+      <tr><td>FM</td><td>MÉDIO</td></tr>
+      <tr><td>CW</td><td>RÁPIDO</td></tr>
+    </tbody>
+  </table>
+
+  <h3>LIMIARES</h3>
+  <table class="tab">
+    <tbody>
+      <tr><td>piso de ruído</td><td>18 dBu (σ 5)</td></tr>
+      <tr><td>portadora real</td><td>acima de 33 dBu</td></tr>
+      <tr><td>SNR mínimo de leitura</td><td>40 dB</td></tr>
+      <tr><td>jammer ativo</td><td>acima de 95 dBu</td></tr>
+    </tbody>
+  </table>
+
+  <h3>NOTAS DE ARQUIVO</h3>
+  <ul class="notas">
+    <li>Ganho alto reduz a interceptação e o SNR ao mesmo tempo. Cada canal tem seu teto.</li>
+    <li>A ordem de leitura do código segue a <b>frequência crescente</b> dos canais ativos.</li>
+    <li>Antheil sincronizava os saltos com um rolo de pianola. O instrumento tem um número exato de teclas.</li>
+    <li>Canais que nunca deixam o piso de ruído não entram no código.</li>
+  </ul>
+</template>
+
+<template id="tplPorta">
+  <p class="lead">Quatro algarismos, em ordem de frequência crescente.
+     <b>Duas tentativas</b> antes da purga.</p>
+  <div id="parcial" class="parcial"></div>
+  <div id="vidas" class="vidas"></div>
+  <div class="ctrl">
+    <label>CÓDIGO <input id="senha" maxlength="4" placeholder="————" autocomplete="off"></label>
+  </div>
+  <button id="btnAbrir" class="btn-acao">DESTRAVAR</button>
+  <div id="fbPorta" class="fb"></div>
+</template>
+
+<script src="sala3.js"></script>
+</body>
+</html>
